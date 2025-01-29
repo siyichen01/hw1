@@ -111,14 +111,62 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
--- TODO!
+ DROP TABLE IF EXISTS movie;
+  DROP TABLE IF EXISTS movie_cast;
+   DROP TABLE IF EXISTS studio;
 
 -- Create new tables, according to your domain model
--- TODO!
+ CREATE TABLE movie (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    studio_id INTEGER,
+    title TEXT,
+    year_released TEXT,
+    MPAA_rating TEXT ); 
+
+CREATE TABLE movie_cast (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_id INTEGER,
+    cast_name TEXT,
+    character_name TEXT
+); 
+
+CREATE TABLE studio (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    studio_name TEXT
+);
+
 
 -- Insert data into your database that reflects the sample data shown above
--- Use hard-coded foreign key IDs when necessary
--- TODO!
+INSERT INTO studio (studio_name) VALUES
+    ('Warner Bros.');
+
+INSERT INTO movie (
+    studio_id,
+    title,
+    year_released,
+    MPAA_rating
+    ) VALUES
+     (1, 'Batman Begins', '2005', 'PG-13'),
+     (1, 'The Dark Knight', '2008', 'PG-13'),
+     (1, 'The Dark Knight Rises', '2012', 'PG-13');
+
+INSERT INTO movie_cast (
+    movie_id, cast_name, character_name) VALUES
+        ((select id from movie where title = 'Batman Begins'), 'Michael Caine', 'Alfred'),
+        ((select id from movie where title = 'Batman Begins'), 'Liam Neeson', 'Ras Al Ghul'),
+        ((select id from movie where title = 'Batman Begins'), 'Katie Holmes', 'Rachel Dawes'),
+        ((select id from movie where title = 'Batman Begins'), 'Gary Oldman', 'Commissioner Gordon'),
+        ((select id from movie where title = 'The Dark Knight'), 'Christian Bale', 'Bruce Wayne'),
+        ((select id from movie where title = 'The Dark Knight'), 'Heath Ledger', 'Joker'),
+        ((select id from movie where title = 'The Dark Knight'), 'Aaron Eckhart', 'Harvey Dent'),
+        ((select id from movie where title = 'The Dark Knight'), 'Michael Caine', 'Alfred'),
+        ((select id from movie where title = 'The Dark Knight'), 'Maggie Gyllenhaal', 'Rachel Dawes'),
+        ((select id from movie where title = 'The Dark Knight Rises'), 'Christian Bale', 'Bruce Wayne'),
+        ((select id from movie where title = 'The Dark Knight Rises'), 'Gary Oldman', 'Commissioner Gordon'),
+        ((select id from movie where title = 'The Dark Knight Rises'), 'Tom Hardy', 'Bane'),
+        ((select id from movie where title = 'The Dark Knight Rises'), 'Joseph Gordon-Levitt', 'John Blake'),
+        ((select id from movie where title = 'The Dark Knight Rises'), 'Anne Hathaway', 'Selina Kyle');
+    
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -126,7 +174,9 @@
 .print ""
 
 -- The SQL statement for the movies output
--- TODO!
+ SELECT m.title, m.year_released, m.MPAA_rating, s.studio_name
+ FROM movie m join studio s on m.studio_id = s.id;
+ 
 
 -- Prints a header for the cast output
 .print ""
@@ -137,3 +187,5 @@
 
 -- The SQL statement for the cast output
 -- TODO!
+select m.title, mc.cast_name, mc.character_name
+from movie m join movie_cast mc on m.id = mc.movie_id;
